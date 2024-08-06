@@ -1,0 +1,48 @@
+[gd_scene load_steps=6 format=3 uid="uid://drl5bf2rd5c4n"]
+
+[ext_resource type="Material" uid="uid://d31aqjn7f8e56" path="res://materials/player.tres" id="1_ngyu0"]
+[ext_resource type="Material" uid="uid://dayb55p8eant3" path="res://sky/sky.tres" id="2_f82gd"]
+[ext_resource type="Material" uid="uid://dvn0poqc72m77" path="res://materials/wall.tres" id="3_trsjp"]
+
+[sub_resource type="Sky" id="Sky_11fm2"]
+sky_material = ExtResource("2_f82gd")
+
+[sub_resource type="Environment" id="Environment_60y80"]
+background_mode = 2
+sky = SubResource("Sky_11fm2")
+
+[node name="Scene" type="Node3D"]
+
+[node name="Player" type="Player" parent="."]
+speed = 5.0
+return_rate = 0.025
+cam = NodePath("Spirit/Camera3D")
+cam_pivot = NodePath(".")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.208333, 0, -1.58578)
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="Player"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.5, 0, 0)
+polygon = PackedVector2Array(0, 0, 1, 1, 1, 0)
+material = ExtResource("1_ngyu0")
+
+[node name="Spirit" type="Node3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 1.09501, 1.26103)
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="Player/Spirit"]
+
+[node name="Camera3D" type="Camera3D" parent="Player/Spirit"]
+transform = Transform3D(1, 0, 0, 0, 1, 5.96046e-08, 0, -5.96046e-08, 1, 0, 0, 0)
+environment = SubResource("Environment_60y80")
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+size = Vector3(10, 0.1, 10)
+material = ExtResource("3_trsjp")
+
+[node name="Wall" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 3, -5)
+size = Vector3(10, 0.1, 10)
+material = ExtResource("3_trsjp")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 10, 0)
