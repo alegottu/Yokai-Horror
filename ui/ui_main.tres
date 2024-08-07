@@ -1,0 +1,18 @@
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://2t6h04o27q8u"]
+
+[ext_resource type="FontFile" uid="uid://dca81gemct7yg" path="res://ui/RdjHandPixel-5w3L.otf" id="1_q08pv"]
+
+[sub_resource type="Gradient" id="Gradient_10wru"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_jmvuo"]
+gradient = SubResource("Gradient_10wru")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1o3jc"]
+texture = SubResource("GradientTexture2D_jmvuo")
+
+[resource]
+default_font = ExtResource("1_q08pv")
+default_font_size = 64
+Button/colors/font_hover_color = Color(0.894248, 0.767478, 0.503079, 1)
+Button/colors/font_pressed_color = Color(0.672087, 0.596214, 0.507132, 1)
+Button/styles/default = SubResource("StyleBoxTexture_1o3jc")
