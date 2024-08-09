@@ -1,28 +1,28 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <godot_cpp/classes/node3d.hpp>
+#include <godot_cpp/classes/character_body3d.hpp>
 #include <godot_cpp/classes/ref.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 
-namespace godot 
-{
+using namespace godot;
 
-class Player : public Node3D
+class Player : public CharacterBody3D
 {
-	GDCLASS(Player, Node3D)
+	GDCLASS(Player, CharacterBody3D)
 
 private:
 	// Inspector properties
 	float speed;
 	float sensitivity;
 	float return_rate;
-	NodePath cam;
-	NodePath cam_pivot;
+	NodePath spirit;
+	NodePath camera;
+	NodePath camera_pivot;
 
-	Node3D* _cam;
-	Node3D* _cam_pivot;
-	Node3D* spirit;
+	CharacterBody3D* _spirit;
+	Node3D* _camera;
+	Node3D* _camera_pivot;
 	Vector3 spirit_start;
 	Vector3 spirit_rotation;
 	bool spirit_active;
@@ -36,22 +36,22 @@ public:
 	~Player();
 
 	// Node property functions
-	void set_speed(const float p_speed);
-	float get_speed() const;
-	void set_sensitivity(const float p_sensitivity);
-	float get_sensitivity() const;
-	void set_return_rate(const float p_return_rate);
-	float get_return_rate() const;
-	void set_cam(const NodePath p_cam);
-	NodePath get_cam() const;
-	void set_cam_pivot(const NodePath p_cam_pivot);
-	NodePath get_cam_pivot() const;
+	void set_speed(const float p_speed) { speed = p_speed; }
+	float get_speed() const { return speed; }
+	void set_sensitivity(const float p_sensitivity) { sensitivity = p_sensitivity; }
+	float get_sensitivity() const { return sensitivity; }
+	void set_return_rate(const float p_return_rate) { return_rate = p_return_rate; }
+	float get_return_rate() const { return return_rate; }
+	void set_spirit(const NodePath p_spirit) { spirit = p_spirit; }
+	NodePath get_spirit() const { return spirit; }
+	void set_camera(const NodePath p_camera) { camera = p_camera; }
+	NodePath get_camera() const { return camera; }
+	void set_camera_pivot(const NodePath p_camera_pivot) { camera_pivot = p_camera_pivot; }
+	NodePath get_camera_pivot() const { return camera_pivot; }
 
 	void _ready() override;
 	void _process(double delta) override;
 	void _input(const Ref<InputEvent>& event) override;
 };
 
-}
-
-#endif // !PLAYER_H
+#endif // PLAYER_H

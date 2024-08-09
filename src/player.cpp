@@ -1,4 +1,5 @@
 #include "player.h"
+#include "helpers.h"
 
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/classes/input_map.hpp>
@@ -10,98 +11,34 @@ using namespace godot;
 
 void Player::_bind_methods()
 {
-	ClassDB::bind_method(D_METHOD("set_speed", "p_speed"), &Player::set_speed);
-	ClassDB::bind_method(D_METHOD("get_speed"), &Player::get_speed);
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "speed"), "set_speed", "get_speed");
-
-	ClassDB::bind_method(D_METHOD("set_sensitivity", "p_sensitivity"), &Player::set_sensitivity);
-	ClassDB::bind_method(D_METHOD("get_sensitivity"), &Player::get_sensitivity);
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "sensitivity"), "set_sensitivity", "get_sensitivity");
-	
-	ClassDB::bind_method(D_METHOD("set_return_rate", "p_return_rate"), &Player::set_return_rate);
-	ClassDB::bind_method(D_METHOD("get_return_rate"), &Player::get_return_rate);
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "return_rate", PROPERTY_HINT_RANGE, "0,1.0,0.001"), "set_return_rate", "get_return_rate");
-
-	ClassDB::bind_method(D_METHOD("set_cam", "p_cam"), &Player::set_cam);
-	ClassDB::bind_method(D_METHOD("get_cam"), &Player::get_cam);
-	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "cam"), "set_cam", "get_cam");
-
-	ClassDB::bind_method(D_METHOD("set_cam_pivot", "p_cam_pivot"), &Player::set_cam_pivot);
-	ClassDB::bind_method(D_METHOD("get_cam_pivot"), &Player::get_cam_pivot);
-	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "cam_pivot"), "set_cam_pivot", "get_cam_pivot");
+	ADD_PRPRTY(&Player::set_speed, &Player::get_speed, PropertyInfo(Variant::FLOAT, "speed"));
+	ADD_PRPRTY(&Player::set_sensitivity, &Player::get_sensitivity, PropertyInfo(Variant::FLOAT, "sensitivity"));
+	ADD_PRPRTY(&Player::set_return_rate, &Player::get_return_rate, PropertyInfo(Variant::FLOAT, "return_rate"));
+	ADD_PRPRTY(&Player::set_spirit, &Player::get_spirit, PropertyInfo(Variant::NODE_PATH, "spirit"));
+	ADD_PRPRTY(&Player::set_camera, &Player::get_camera, PropertyInfo(Variant::NODE_PATH, "camera"));
+	ADD_PRPRTY(&Player::set_camera_pivot, &Player::get_camera_pivot, PropertyInfo(Variant::NODE_PATH, "camera_pivot"));
 }
 
 Player::Player()
+	: speed(1.0f), sensitivity(1.0f), return_rate(0.1f),
+	spirit_active(false), spirit_return(false),
+	spirit(NodePath()), camera(NodePath()), camera_pivot(NodePath()),
+	_spirit(nullptr), _camera(nullptr), _camera_pivot(nullptr)
 {
-	speed = 1.0;
-	sensitivity = 1.0;
-	return_rate = 0.1;
-	spirit_active = false;
-	spirit_return = false;
 }
 
 Player::~Player()
 {
 }
 
-void Player::set_speed(const float p_speed)
-{
-	speed = p_speed;
-}
-
-float Player::get_speed() const
-{
-	return speed;
-}
-
-void Player::set_sensitivity(const float p_sensitivity)
-{
-	sensitivity = p_sensitivity;
-}
-
-float Player::get_sensitivity() const
-{
-	return sensitivity;
-}
-
-void Player::set_return_rate(const float p_return_rate)
-{
-	return_rate = p_return_rate;
-}
-
-float Player::get_return_rate() const
-{
-	return return_rate;
-}
-
-void Player::set_cam(const NodePath p_cam)
-{
-	cam = p_cam;
-}
-
-NodePath Player::get_cam() const
-{
-	return cam;
-}
-
-void Player::set_cam_pivot(const NodePath p_cam_pivot)
-{
-	cam_pivot = p_cam_pivot;
-}
-
-NodePath Player::get_cam_pivot() const
-{
-	return cam_pivot;
-}
-
 void Player::_ready()
 {
 	InputMap::get_singleton()->load_from_project_settings();
 
-	_cam = get_node<Node3D>(cam);
-	_cam_pivot = get_node<Node3D>(cam_pivot); 
-	spirit = _cam->get_parent_node_3d();
-	spirit_start = spirit->get_position();
+	_spirit = spirit.is_empty() ? this : get_node<CharacterBody3D>(spirit);
+	spirit_start = _spirit->get_position();
+	_camera = camera.is_empty() ? Object::cast_to<Node3D>(this) : get_node<Node3D>(camera);
+	_camera_pivot = camera_pivot.is_empty() ? Object::cast_to<Node3D>(this) : get_node<Node3D>(camera_pivot);
 }
 
 void Player::_process(double delta)
@@ -111,7 +48,7 @@ void Player::_process(double delta)
 	if (Input->is_action_just_pressed("switch"))
 	{
 		if (!spirit_active)
-			spirit_rotation = spirit->get_rotation();
+			spirit_rotation = _spirit->get_rotation();
 
 		spirit_return = spirit_active;
 		spirit_active = !spirit_active;
@@ -120,10 +57,10 @@ void Player::_process(double delta)
 	// test if this can be optimized with coroutine
 	if (spirit_return)
 	{
-		Vector3 lerp_pos = spirit->get_position().lerp(spirit_start, return_rate);
-		Vector3 lerp_rotation = spirit->get_rotation().lerp(spirit_rotation, return_rate);
-		spirit->set_position(lerp_pos);
-		spirit->set_rotation(lerp_rotation);
+		Vector3 lerp_pos = _spirit->get_position().lerp(spirit_start, return_rate);
+		Vector3 lerp_rotation = _spirit->get_rotation().lerp(spirit_rotation, return_rate);
+		_spirit->set_position(lerp_pos);
+		_spirit->set_rotation(lerp_rotation);
 
 		if (lerp_pos == spirit_start && lerp_rotation == spirit_rotation)
 		{
@@ -132,18 +69,22 @@ void Player::_process(double delta)
 	}
 
 	Vector2 input = Input->get_vector("left", "right", "forward", "back");
-	Vector3 delta_pos = _cam->get_basis().xform(Vector3(input.x, 0.0, input.y));
+	Vector3 delta_pos = _camera->get_global_basis().xform(Vector3(input.x, 0.0f, input.y));
 	delta_pos.normalize();
-	delta_pos *= delta * speed;
+	delta_pos *= speed;
 	
 	if (!spirit_active)
 	{
-		delta_pos *= Vector3(1.0, 0.0, 1.0);
-		translate(delta_pos);
+		delta_pos = Vector3(delta_pos.x, GRAVITY_Y, delta_pos.z);
+		_spirit->set_velocity(VECTOR3_ZERO);
+		set_velocity(delta_pos);
+		move_and_slide();
 	}
 	else 
 	{
-		spirit->translate(delta_pos);
+		set_velocity(VECTOR3_ZERO);
+		_spirit->set_velocity(delta_pos);
+		_spirit->move_and_slide();
 	}
 }
 
@@ -157,13 +98,13 @@ void Player::_input(const Ref<InputEvent>& event)
 		Vector2 movement = mouse_move->get_relative();
 
 		if (!spirit_active)
-			_cam_pivot->rotate_y(-movement.x * _sensitivity);
+			_camera_pivot->rotate_y(-movement.x * _sensitivity);
 		else
-			spirit->rotate_y(-movement.x * _sensitivity);
+			_spirit->rotate_y(-movement.x * _sensitivity);
 
-		_cam->rotate_x(-movement.y * _sensitivity);
-		Vector3 rotation = _cam->get_rotation();
+		_camera->rotate_x(-movement.y * _sensitivity);
+		Vector3 rotation = _camera->get_rotation();
 		double clamped_x = Math::clamp<double>(rotation.x, Math::deg_to_rad(-45.0), Math::deg_to_rad(90.0));
-		_cam->set_rotation(Vector3(clamped_x, rotation.y, rotation.z));
+		_camera->set_rotation(Vector3(clamped_x, rotation.y, rotation.z));
 	}
 }

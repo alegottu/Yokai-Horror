@@ -22,3 +22,6 @@ compile_flags.txt
 
 # Binaries
 bin/
+
+# SCons
+.sconsign.dblite
