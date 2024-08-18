@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <godot_cpp/classes/character_body3d.hpp>
+#include <godot_cpp/classes/shader_material.hpp>
 #include <godot_cpp/classes/ref.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 
@@ -19,12 +20,15 @@ private:
 	NodePath spirit;
 	NodePath camera;
 	NodePath camera_pivot;
+	NodePath sub_viewport;
 
 	CharacterBody3D* _spirit;
 	Node3D* _camera;
 	Node3D* _camera_pivot;
+	Ref<ShaderMaterial> sub_viewport_mat;
 	Vector3 spirit_start;
-	Vector3 spirit_rotation;
+	Vector3 spirit_last_rotation;
+	float starting_distance;
 	bool spirit_active;
 	bool spirit_return;
 
@@ -48,10 +52,13 @@ public:
 	NodePath get_camera() const { return camera; }
 	void set_camera_pivot(const NodePath p_camera_pivot) { camera_pivot = p_camera_pivot; }
 	NodePath get_camera_pivot() const { return camera_pivot; }
+	void set_sub_viewport(const NodePath p_sub_viewport) { sub_viewport = p_sub_viewport; }
+	NodePath get_sub_viewport() const { return sub_viewport; }
 
 	void _ready() override;
 	void _process(double delta) override;
 	void _input(const Ref<InputEvent>& event) override;
+	void _physics_process(double delta) override; 
 };
 
 #endif // PLAYER_H

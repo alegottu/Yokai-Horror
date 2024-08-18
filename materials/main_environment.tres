@@ -1,0 +1,9 @@
+[gd_resource type="Environment" load_steps=2 format=3 uid="uid://f6admlja0bxt"]
+
+[ext_resource type="Sky" uid="uid://dedhisdynptt7" path="res://materials/main_sky.tres" id="1_823eh"]
+
+[resource]
+background_mode = 2
+sky = ExtResource("1_823eh")
+ambient_light_color = Color(1, 1, 1, 1)
+reflected_light_source = 1

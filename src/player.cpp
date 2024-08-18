@@ -1,4 +1,6 @@
 #include "player.h"
+#include "godot_cpp/classes/canvas_item.hpp"
+#include "godot_cpp/classes/shader_material.hpp"
 #include "helpers.h"
 
 #include <godot_cpp/core/class_db.hpp>
@@ -6,6 +8,7 @@
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
 #include <godot_cpp/core/math.hpp>
+#include <iterator>
 
 using namespace godot;
 
@@ -17,13 +20,12 @@ void Player::_bind_methods()
 	ADD_PRPRTY(&Player::set_spirit, &Player::get_spirit, PropertyInfo(Variant::NODE_PATH, "spirit"));
 	ADD_PRPRTY(&Player::set_camera, &Player::get_camera, PropertyInfo(Variant::NODE_PATH, "camera"));
 	ADD_PRPRTY(&Player::set_camera_pivot, &Player::get_camera_pivot, PropertyInfo(Variant::NODE_PATH, "camera_pivot"));
+	ADD_PRPRTY(&Player::set_sub_viewport, &Player::get_sub_viewport, PropertyInfo(Variant::NODE_PATH, "sub_viewport"));
 }
 
 Player::Player()
 	: speed(1.0f), sensitivity(1.0f), return_rate(0.1f),
-	spirit_active(false), spirit_return(false),
-	spirit(NodePath()), camera(NodePath()), camera_pivot(NodePath()),
-	_spirit(nullptr), _camera(nullptr), _camera_pivot(nullptr)
+	spirit_active(false), spirit_return(false)
 {
 }
 
@@ -37,18 +39,26 @@ void Player::_ready()
 
 	_spirit = spirit.is_empty() ? this : get_node<CharacterBody3D>(spirit);
 	spirit_start = _spirit->get_position();
+	starting_distance = get_position().distance_to(_spirit->get_position());
 	_camera = camera.is_empty() ? Object::cast_to<Node3D>(this) : get_node<Node3D>(camera);
 	_camera_pivot = camera_pivot.is_empty() ? Object::cast_to<Node3D>(this) : get_node<Node3D>(camera_pivot);
+
+	if (!sub_viewport.is_empty())
+	{
+		sub_viewport_mat = get_node<CanvasItem>(sub_viewport)->get_material();
+	}
 }
 
 void Player::_process(double delta)
 {
 	Input* Input = Input::get_singleton();
+	Vector3 spirit_pos = _spirit->get_position();
+	Vector3 spirit_rotation = _spirit->get_rotation();
 
 	if (Input->is_action_just_pressed("switch"))
 	{
 		if (!spirit_active)
-			spirit_rotation = _spirit->get_rotation();
+			spirit_last_rotation = _spirit->get_rotation();
 
 		spirit_return = spirit_active;
 		spirit_active = !spirit_active;
@@ -57,12 +67,12 @@ void Player::_process(double delta)
 	// test if this can be optimized with coroutine
 	if (spirit_return)
 	{
-		Vector3 lerp_pos = _spirit->get_position().lerp(spirit_start, return_rate);
-		Vector3 lerp_rotation = _spirit->get_rotation().lerp(spirit_rotation, return_rate);
+		Vector3 lerp_pos = spirit_pos.lerp(spirit_start, return_rate);
+		Vector3 lerp_rotation = spirit_rotation.lerp(spirit_last_rotation, return_rate);
 		_spirit->set_position(lerp_pos);
 		_spirit->set_rotation(lerp_rotation);
 
-		if (lerp_pos == spirit_start && lerp_rotation == spirit_rotation)
+		if (lerp_pos == spirit_start && lerp_rotation == spirit_last_rotation)
 		{
 			spirit_return = false;
 		}
@@ -86,6 +96,12 @@ void Player::_process(double delta)
 		_spirit->set_velocity(delta_pos);
 		_spirit->move_and_slide();
 	}
+
+	if (!sub_viewport_mat.is_null())
+	{
+		float distance = get_position().distance_to(spirit_pos) - starting_distance;
+		sub_viewport_mat->set_shader_parameter("player_distance", distance);
+	}
 }
 
 void Player::_input(const Ref<InputEvent>& event)
@@ -107,4 +123,8 @@ void Player::_input(const Ref<InputEvent>& event)
 		double clamped_x = Math::clamp<double>(rotation.x, Math::deg_to_rad(-45.0), Math::deg_to_rad(90.0));
 		_camera->set_rotation(Vector3(clamped_x, rotation.y, rotation.z));
 	}
+}
+
+void Player::_physics_process(double delta)
+{
 }

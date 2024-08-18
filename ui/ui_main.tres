@@ -12,7 +12,7 @@ texture = SubResource("GradientTexture2D_jmvuo")
 
 [resource]
 default_font = ExtResource("1_q08pv")
-default_font_size = 64
+default_font_size = 32
 Button/colors/font_hover_color = Color(0.894248, 0.767478, 0.503079, 1)
 Button/colors/font_pressed_color = Color(0.672087, 0.596214, 0.507132, 1)
 Button/styles/default = SubResource("StyleBoxTexture_1o3jc")
