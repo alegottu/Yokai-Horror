@@ -5,10 +5,11 @@
 [resource]
 shader = ExtResource("1_inuk4")
 shader_parameter/max_player_distance = 25.0
+shader_parameter/static_speed = 0.001
 shader_parameter/negative_speed = 1.0
 shader_parameter/negative_threshold = 0.7
 shader_parameter/noise_damp = 0.5
-shader_parameter/distance_margin = 0.25
+shader_parameter/distance_margin = 0.5
 shader_parameter/dithering = false
 shader_parameter/colors = 16
 shader_parameter/dither_size = 1

@@ -1,14 +1,13 @@
 #include "player.h"
-#include "godot_cpp/classes/canvas_item.hpp"
-#include "godot_cpp/classes/shader_material.hpp"
 #include "helpers.h"
 
 #include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/canvas_item.hpp>
 #include <godot_cpp/classes/input_map.hpp>
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
 #include <godot_cpp/core/math.hpp>
-#include <iterator>
 
 using namespace godot;
 
@@ -35,11 +34,16 @@ Player::~Player()
 
 void Player::_ready()
 {
+	if (Engine::get_singleton()->is_editor_hint())
+		set_process_mode(Node::ProcessMode::PROCESS_MODE_DISABLED);
+	else
+	 	set_process_mode(Node::ProcessMode::PROCESS_MODE_INHERIT);
+
 	InputMap::get_singleton()->load_from_project_settings();
 
 	_spirit = spirit.is_empty() ? this : get_node<CharacterBody3D>(spirit);
 	spirit_start = _spirit->get_position();
-	starting_distance = get_position().distance_to(_spirit->get_position());
+	starting_distance = _spirit->get_position().length();
 	_camera = camera.is_empty() ? Object::cast_to<Node3D>(this) : get_node<Node3D>(camera);
 	_camera_pivot = camera_pivot.is_empty() ? Object::cast_to<Node3D>(this) : get_node<Node3D>(camera_pivot);
 
@@ -99,7 +103,7 @@ void Player::_process(double delta)
 
 	if (!sub_viewport_mat.is_null())
 	{
-		float distance = get_position().distance_to(spirit_pos) - starting_distance;
+		float distance = spirit_pos.length() - starting_distance;
 		sub_viewport_mat->set_shader_parameter("player_distance", distance);
 	}
 }

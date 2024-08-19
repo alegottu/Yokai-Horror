@@ -4,9 +4,9 @@ render_mode unshaded;
 
 #define MAXCOLORS 16
 
-const float distance_time_effect = 0.0001;
 
 uniform float max_player_distance = 1.0;
+uniform float static_speed : hint_range(0.0, 1.0) = 0.001;
 uniform float negative_speed = 1.0;
 uniform float negative_threshold : hint_range(0.0, 1.0) = 0.75;
 uniform float noise_damp : hint_range(0.0, 1.0) = 1.0;
@@ -66,12 +66,12 @@ float Random(in vec2 st)
 
 vec4 tether_effect(vec4 raw, vec2 uv) {
 	float new_dist = max(0.0, floor(player_distance - distance_margin));
-	uv *= new_dist * TIME * distance_time_effect;
-
 	float prog = new_dist / max_player_distance; // assumes that player can actually not go past max distance
     vec4 neg = vec4(1.0, 1.0, 1.0, 0.0) - raw;
 	float prog_thresholded = prog * negative_speed * ceil(max(0.0, prog - negative_threshold));
 	raw = mix(raw, neg, prog_thresholded);
+
+	uv *= TIME * static_speed;
     vec4 noise = vec4(Random(uv.yy), Random(uv.xy), Random(uv.xx), 1.0);
 	return mix(raw, noise, prog * noise_damp);
 }

@@ -1,11 +1,12 @@
 [gd_scene load_steps=8 format=3 uid="uid://drl5bf2rd5c4n"]
 
-[ext_resource type="Material" uid="uid://d31aqjn7f8e56" path="res://materials/player.tres" id="1_ngyu0"]
+[ext_resource type="Material" uid="uid://ckyomm51vo4yw" path="res://materials/player.tres" id="1_ngyu0"]
 [ext_resource type="Material" uid="uid://ci5l1tnww1je0" path="res://psx/psx_post_mat.tres" id="1_pqrbc"]
 [ext_resource type="Environment" uid="uid://f6admlja0bxt" path="res://materials/main_environment.tres" id="2_afvo3"]
-[ext_resource type="Material" uid="uid://dvn0poqc72m77" path="res://materials/wall.tres" id="3_trsjp"]
+[ext_resource type="Material" uid="uid://dk3kq70e822ou" path="res://materials/basic_opaque.tres" id="3_s5x4y"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_gxtkd"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_nvuhv"]
+size = Vector3(1, 1.50592, 1)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_hkngp"]
 
@@ -35,19 +36,28 @@ spirit = NodePath("Spirit")
 camera = NodePath("Spirit/Camera3D")
 camera_pivot = NodePath(".")
 sub_viewport = NodePath("../../..")
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0347222, -1.44906, -0.766739)
+process_mode = 4
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 collision_layer = 2
+slide_on_ceiling = false
 
-[node name="Player Collider" type="CollisionShape3D" parent="SubViewport/Scene/Player Control"]
-shape = SubResource("BoxShape3D_gxtkd")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SubViewport/Scene/Player Control"]
+shape = SubResource("BoxShape3D_nvuhv")
 
-[node name="CSGPolygon3D" type="CSGPolygon3D" parent="SubViewport/Scene/Player Control/Player Collider"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.5, -0.5, 0.5)
-polygon = PackedVector2Array(0, 0, 1, 1, 1, 0)
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="SubViewport/Scene/Player Control"]
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="SubViewport/Scene/Player Control/CSGCombiner3D"]
+height = 1.5
+smooth_faces = false
 material = ExtResource("1_ngyu0")
 
+[node name="CSGBox3D" type="CSGBox3D" parent="SubViewport/Scene/Player Control/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, -0.5)
+size = Vector3(1, 0.25, 0.25)
+material = ExtResource("3_s5x4y")
+
 [node name="Spirit" type="CharacterBody3D" parent="SubViewport/Scene/Player Control"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.23517e-08, 2.12025, 2.5743)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 1.5)
 collision_layer = 4
 
 [node name="Spirit Collider" type="CollisionShape3D" parent="SubViewport/Scene/Player Control/Spirit"]
@@ -59,11 +69,12 @@ transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 0)
 environment = ExtResource("2_afvo3")
 
 [node name="CSGSphere3D" type="CSGSphere3D" parent="SubViewport/Scene/Player Control/Spirit"]
+visible = false
 
 [node name="Wall" type="CSGBox3D" parent="SubViewport/Scene"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 3, -5)
 size = Vector3(10, 0.1, 10)
-material = ExtResource("3_trsjp")
+material = ExtResource("3_s5x4y")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="SubViewport/Scene/Wall"]
 
@@ -73,7 +84,7 @@ shape = SubResource("BoxShape3D_ym5w1")
 [node name="Wall2" type="CSGBox3D" parent="SubViewport/Scene"]
 transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, -2, 0)
 size = Vector3(10, 0.1, 10)
-material = ExtResource("3_trsjp")
+material = ExtResource("3_s5x4y")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="SubViewport/Scene/Wall2"]
 

@@ -62,3 +62,38 @@ switch={
 3d_physics/layer_2="Player"
 3d_physics/layer_3="Spirit"
 3d_physics/layer_4="Spirit Passthrough"
+
+[shader_globals]
+
+affine_texture_mapping={
+"type": "bool",
+"value": true
+}
+fog_color={
+"type": "color",
+"value": Color(0, 0, 0, 1)
+}
+fog_start_distance={
+"type": "float",
+"value": 0.0
+}
+fog_end_distance={
+"type": "float",
+"value": 0.0
+}
+cull_distance={
+"type": "float",
+"value": 64.0
+}
+texture_filtering={
+"type": "bool",
+"value": false
+}
+texture_lod_halve_distance={
+"type": "float",
+"value": 0.0
+}
+vertex_snap_intensity={
+"type": "int",
+"value": 2
+}
