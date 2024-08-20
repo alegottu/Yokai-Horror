@@ -1,7 +1,6 @@
 #include "player.h"
 #include "helpers.h"
 
-#include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/canvas_item.hpp>
 #include <godot_cpp/classes/input_map.hpp>
@@ -53,61 +52,6 @@ void Player::_ready()
 	}
 }
 
-void Player::_process(double delta)
-{
-	Input* Input = Input::get_singleton();
-	Vector3 spirit_pos = _spirit->get_position();
-	Vector3 spirit_rotation = _spirit->get_rotation();
-
-	if (Input->is_action_just_pressed("switch"))
-	{
-		if (!spirit_active)
-			spirit_last_rotation = _spirit->get_rotation();
-
-		spirit_return = spirit_active;
-		spirit_active = !spirit_active;
-	}
-
-	// test if this can be optimized with coroutine
-	if (spirit_return)
-	{
-		Vector3 lerp_pos = spirit_pos.lerp(spirit_start, return_rate);
-		Vector3 lerp_rotation = spirit_rotation.lerp(spirit_last_rotation, return_rate);
-		_spirit->set_position(lerp_pos);
-		_spirit->set_rotation(lerp_rotation);
-
-		if (lerp_pos == spirit_start && lerp_rotation == spirit_last_rotation)
-		{
-			spirit_return = false;
-		}
-	}
-
-	Vector2 input = Input->get_vector("left", "right", "forward", "back");
-	Vector3 delta_pos = _camera->get_global_basis().xform(Vector3(input.x, 0.0f, input.y));
-	delta_pos.normalize();
-	delta_pos *= speed;
-	
-	if (!spirit_active)
-	{
-		delta_pos = Vector3(delta_pos.x, GRAVITY_Y, delta_pos.z);
-		_spirit->set_velocity(VECTOR3_ZERO);
-		set_velocity(delta_pos);
-		move_and_slide();
-	}
-	else 
-	{
-		set_velocity(VECTOR3_ZERO);
-		_spirit->set_velocity(delta_pos);
-		_spirit->move_and_slide();
-	}
-
-	if (!sub_viewport_mat.is_null())
-	{
-		float distance = spirit_pos.length() - starting_distance;
-		sub_viewport_mat->set_shader_parameter("player_distance", distance);
-	}
-}
-
 void Player::_input(const Ref<InputEvent>& event)
 {
 	Ref<InputEventMouseMotion> mouse_move = event;
@@ -127,8 +71,56 @@ void Player::_input(const Ref<InputEvent>& event)
 		double clamped_x = Math::clamp<double>(rotation.x, Math::deg_to_rad(-45.0), Math::deg_to_rad(90.0));
 		_camera->set_rotation(Vector3(clamped_x, rotation.y, rotation.z));
 	}
+
+	if (event->is_action_pressed("switch"))
+	{
+		if (!spirit_active)
+			spirit_last_rotation = _spirit->get_rotation();
+
+		spirit_return = spirit_active;
+		spirit_active = !spirit_active;
+	}
 }
 
 void Player::_physics_process(double delta)
 {
+	Vector3 spirit_pos = _spirit->get_position();
+	Vector2 input = Input::get_singleton()->get_vector("left", "right", "forward", "back");
+	Vector3 delta_pos = _camera->get_global_basis().xform(Vector3(input.x, 0.0f, input.y));
+	delta_pos.normalize();
+	delta_pos *= speed;
+	
+	if (!spirit_active)
+	{
+		delta_pos = Vector3(delta_pos.x, GRAVITY_Y, delta_pos.z);
+		_spirit->set_velocity(VECTOR3_ZERO);
+		set_velocity(delta_pos);
+		move_and_slide();
+	}
+	else 
+	{
+		set_velocity(VECTOR3_ZERO);
+		_spirit->set_velocity(delta_pos);
+		_spirit->move_and_slide();
+	}
+
+	// test if this can be optimized with coroutine
+	if (spirit_return)
+	{
+		Vector3 lerp_pos = spirit_pos.lerp(spirit_start, return_rate);
+		Vector3 lerp_rotation = _spirit->get_rotation().lerp(spirit_last_rotation, return_rate);
+		_spirit->set_position(lerp_pos);
+		_spirit->set_rotation(lerp_rotation);
+
+		if (lerp_pos == spirit_start && lerp_rotation == spirit_last_rotation)
+		{
+			spirit_return = false;
+		}
+	}
+
+	if (!sub_viewport_mat.is_null())
+	{
+		float distance = spirit_pos.length() - starting_distance;
+		sub_viewport_mat->set_shader_parameter("player_distance", distance);
+	}
 }
