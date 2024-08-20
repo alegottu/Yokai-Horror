@@ -21,7 +21,6 @@ builds/
 compile_flags.txt
 
 # Binaries
-bin/
 *.obj
 
 # SCons
