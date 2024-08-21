@@ -1,6 +1,7 @@
 #include "register_types.h"
 #include "player.h"
 #include "light_puzzle.h"
+#include "proximity_object.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -14,6 +15,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	}
 
 	GDREGISTER_CLASS(Player);
+	//GDREGISTER_CLASS(ProximityObject);
 	GDREGISTER_CLASS(LightPuzzle);
 }
 

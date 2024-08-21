@@ -1,11 +1,24 @@
 #include "proximity_object.h"
+#include "godot_cpp/core/object.hpp"
 
 #include <godot_cpp/core/class_db.hpp>
 
 void ProximityObject::_bind_methods()
 {
-	ClassDB::bind_method(D_METHOD("body_entered"), &ProximityObject::body_entered);
-	ClassDB::bind_method(D_METHOD("body_exited"), &ProximityObject::body_exited);
+	ClassDB::bind_method(D_METHOD("body_entered"), &ProximityObject::_body_entered);
+	ClassDB::bind_method(D_METHOD("body_exited"), &ProximityObject::_body_exited);
+
+	ADD_SIGNAL(MethodInfo("proximity_interact", PropertyInfo(Variant::OBJECT, "node")));
+}
+
+void ProximityObject::_body_entered()
+{
+	active = true;	
+}
+
+void ProximityObject::_body_exited()
+{
+	active = false;
 }
 
 ProximityObject::ProximityObject()
@@ -19,12 +32,10 @@ ProximityObject::~ProximityObject()
 {
 }
 
-void ProximityObject::body_entered()
+void ProximityObject::_input (const Ref<InputEvent>& event)
 {
-	active = true;	
-}
-
-void ProximityObject::body_exited()
-{
-	active = false;
+	if (event->is_action_pressed("click"))
+	{
+		emit_signal("proximity_interact", this);
+	}
 }

@@ -15,6 +15,7 @@ void Player::_bind_methods()
 	ADD_PRPRTY(&Player::set_speed, &Player::get_speed, PropertyInfo(Variant::FLOAT, "speed"));
 	ADD_PRPRTY(&Player::set_sensitivity, &Player::get_sensitivity, PropertyInfo(Variant::FLOAT, "sensitivity"));
 	ADD_PRPRTY(&Player::set_return_rate, &Player::get_return_rate, PropertyInfo(Variant::FLOAT, "return_rate"));
+	ADD_PRPRTY(&Player::set_return_margin, &Player::get_return_margin, PropertyInfo(Variant::FLOAT, "return_margin"));
 	ADD_PRPRTY(&Player::set_spirit, &Player::get_spirit, PropertyInfo(Variant::NODE_PATH, "spirit"));
 	ADD_PRPRTY(&Player::set_camera, &Player::get_camera, PropertyInfo(Variant::NODE_PATH, "camera"));
 	ADD_PRPRTY(&Player::set_camera_pivot, &Player::get_camera_pivot, PropertyInfo(Variant::NODE_PATH, "camera_pivot"));
@@ -23,7 +24,7 @@ void Player::_bind_methods()
 
 Player::Player()
 	: speed(1.0f), sensitivity(1.0f), return_rate(0.1f),
-	spirit_active(false), spirit_return(false)
+	return_margin(0.1f), spirit_active(false), spirit_return(false)
 {
 }
 
@@ -82,9 +83,37 @@ void Player::_input(const Ref<InputEvent>& event)
 	}
 }
 
-void Player::_physics_process(double delta)
+void Player::_physics_process(const double delta)
 {
 	Vector3 spirit_pos = _spirit->get_position();
+
+	if (!sub_viewport_mat.is_null())
+	{
+		float distance = spirit_pos.length() - starting_distance;
+		sub_viewport_mat->set_shader_parameter("player_distance", distance);
+	}
+
+	// test if this can be optimized with coroutine
+	if (spirit_return)
+	{
+		Vector3 lerp_pos = spirit_pos.lerp(spirit_start, return_rate);
+		Vector3 lerp_rotation = _spirit->get_rotation().lerp(spirit_last_rotation, return_rate);
+		_spirit->set_position(lerp_pos);
+		_spirit->set_rotation(lerp_rotation);
+
+		if (lerp_pos.distance_to(spirit_start) <= return_margin
+			&& Math::floor(lerp_rotation.distance_to(spirit_last_rotation)) <= return_margin)
+		{
+			_spirit->set_position(spirit_start);
+			_spirit->set_rotation(spirit_last_rotation);
+			spirit_return = false;
+		}
+
+		// without this order, there was previously a bug where you could remove while returning;
+		// this allowed you to change your camera position while moving as the player, which could be interesting
+		return;
+	}
+
 	Vector2 input = Input::get_singleton()->get_vector("left", "right", "forward", "back");
 	Vector3 delta_pos = _camera->get_global_basis().xform(Vector3(input.x, 0.0f, input.y));
 	delta_pos.normalize();
@@ -102,25 +131,5 @@ void Player::_physics_process(double delta)
 		set_velocity(VECTOR3_ZERO);
 		_spirit->set_velocity(delta_pos);
 		_spirit->move_and_slide();
-	}
-
-	// test if this can be optimized with coroutine
-	if (spirit_return)
-	{
-		Vector3 lerp_pos = spirit_pos.lerp(spirit_start, return_rate);
-		Vector3 lerp_rotation = _spirit->get_rotation().lerp(spirit_last_rotation, return_rate);
-		_spirit->set_position(lerp_pos);
-		_spirit->set_rotation(lerp_rotation);
-
-		if (lerp_pos == spirit_start && lerp_rotation == spirit_last_rotation)
-		{
-			spirit_return = false;
-		}
-	}
-
-	if (!sub_viewport_mat.is_null())
-	{
-		float distance = spirit_pos.length() - starting_distance;
-		sub_viewport_mat->set_shader_parameter("player_distance", distance);
 	}
 }

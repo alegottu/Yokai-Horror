@@ -17,6 +17,7 @@ private:
 	float speed;
 	float sensitivity;
 	float return_rate;
+	float return_margin;
 	NodePath spirit;
 	NodePath camera;
 	NodePath camera_pivot;
@@ -46,6 +47,8 @@ public:
 	float get_sensitivity() const { return sensitivity; }
 	void set_return_rate(const float p_return_rate) { return_rate = p_return_rate; }
 	float get_return_rate() const { return return_rate; }
+	void set_return_margin(const float p_return_margin) { return_margin = p_return_margin; }
+	float get_return_margin() const { return return_margin; }
 	void set_spirit(const NodePath p_spirit) { spirit = p_spirit; }
 	NodePath get_spirit() const { return spirit; }
 	void set_camera(const NodePath p_camera) { camera = p_camera; }
@@ -57,7 +60,7 @@ public:
 
 	void _ready() override;
 	void _input(const Ref<InputEvent>& event) override;
-	void _physics_process(double delta) override; 
+	void _physics_process(const double delta) override; 
 };
 
 #endif // PLAYER_H

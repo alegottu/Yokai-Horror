@@ -3,7 +3,7 @@
 
 #include <godot_cpp/classes/node3d.hpp>
 #include <godot_cpp/variant/array.hpp>
-#include <godot_cpp/classes/light3d.hpp>
+#include <godot_cpp/classes/area3d.hpp>
 #include <godot_cpp/classes/ref.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 
@@ -15,11 +15,13 @@ GDCLASS(LightPuzzle, Node3D)
 
 private:
 	// Inspector properties
-	Array lights; // array of Light3D or NodePaths, can possibly be replace with PackedArray of strings
+	Array light_areas; // array of Light3D or NodePaths, can possibly be replace with PackedArray of strings
 	
-	Light3D** _lights;
-	// unsigned char active_light; // index to the light that the player is near
-	// unsigned char next_light; // index to the light that should be turned on next
+	Area3D** _light_areas;
+	unsigned char num_lights;
+	unsigned char active_light; // index to the light that the player is near
+	unsigned char next_light; // index to the light that should be turned on next
+	unsigned char lights_on;
 
 protected:
 	static void _bind_methods();
@@ -29,10 +31,14 @@ public:
 	~LightPuzzle();
 
 	// Node property functions
-	void set_lights(const Array p_lights) { lights = p_lights; }
-	Array get_lights() const { return lights; }
+	void set_light_areas(const Array p_light_areas) { light_areas = p_light_areas; }
+	Array get_light_areas() const { return light_areas; }
 
 	void _ready() override;
+	void _input(const Ref<InputEvent>& event) override;
+	
+	void _body_entered(const Node3D* node);
+	void _body_exited(const Node3D* _);
 };
 
 #endif // !LIGHT_PUZZLE_H

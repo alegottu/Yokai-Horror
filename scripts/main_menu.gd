@@ -5,7 +5,6 @@ extends Node
 @export var settings_menu: Node
 
 func _on_play_button_down():
-	print(main_scene)
 	get_tree().change_scene_to_packed(main_scene)
 
 func _on_quit_button_down():
