@@ -1,11 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://drl5bf2rd5c4n"]
+[gd_scene load_steps=10 format=3 uid="uid://cc840iqdwjub0"]
 
-[ext_resource type="Material" uid="uid://ckyomm51vo4yw" path="res://materials/player.tres" id="1_ngyu0"]
-[ext_resource type="Material" uid="uid://ci5l1tnww1je0" path="res://psx/psx_post_mat.tres" id="1_pqrbc"]
-[ext_resource type="Environment" uid="uid://f6admlja0bxt" path="res://materials/main_environment.tres" id="2_afvo3"]
-[ext_resource type="Material" uid="uid://dk3kq70e822ou" path="res://materials/basic_opaque.tres" id="3_s5x4y"]
-[ext_resource type="Material" uid="uid://bp0nj17msegdg" path="res://materials/wall.tres" id="3_trsjp"]
-[ext_resource type="Material" uid="uid://bjl55gbxawath" path="res://materials/light.tres" id="6_q34lj"]
+[ext_resource type="Material" uid="uid://ci5l1tnww1je0" path="res://psx/psx_post_mat.tres" id="1_sou3h"]
+[ext_resource type="Material" uid="uid://ckyomm51vo4yw" path="res://materials/player.tres" id="2_s8j85"]
+[ext_resource type="Material" uid="uid://dk3kq70e822ou" path="res://materials/basic_opaque.tres" id="3_8kf4m"]
+[ext_resource type="Environment" uid="uid://f6admlja0bxt" path="res://materials/main_environment.tres" id="4_ykp2o"]
+[ext_resource type="Material" uid="uid://bp0nj17msegdg" path="res://materials/wall.tres" id="5_mkpra"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_nvuhv"]
 size = Vector3(1, 1.50592, 1)
@@ -19,7 +18,7 @@ size = Vector3(10, 0.1, 10)
 size = Vector3(2, 1, 2)
 
 [node name="SubViewportContainer" type="SubViewportContainer"]
-material = ExtResource("1_pqrbc")
+material = ExtResource("1_sou3h")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -45,6 +44,7 @@ physics_interpolation_mode = 0
 auto_translate_mode = 0
 editor_description = ""
 speed = 5.0
+return_rate = 0.025
 spirit = NodePath("Spirit")
 camera = NodePath("Spirit/Camera3D")
 camera_pivot = NodePath(".")
@@ -61,12 +61,12 @@ shape = SubResource("BoxShape3D_nvuhv")
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="SubViewport/Scene/Player Control/CSGCombiner3D"]
 height = 1.5
 smooth_faces = false
-material = ExtResource("1_ngyu0")
+material = ExtResource("2_s8j85")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="SubViewport/Scene/Player Control/CSGCombiner3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, -0.5)
 size = Vector3(1, 0.25, 0.25)
-material = ExtResource("3_s5x4y")
+material = ExtResource("3_8kf4m")
 
 [node name="Spirit" type="CharacterBody3D" parent="SubViewport/Scene/Player Control"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 1.5)
@@ -78,7 +78,7 @@ shape = SubResource("SphereShape3D_hkngp")
 
 [node name="Camera3D" type="Camera3D" parent="SubViewport/Scene/Player Control/Spirit"]
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 0)
-environment = ExtResource("2_afvo3")
+environment = ExtResource("4_ykp2o")
 
 [node name="CSGSphere3D" type="CSGSphere3D" parent="SubViewport/Scene/Player Control/Spirit"]
 visible = false
@@ -86,7 +86,7 @@ visible = false
 [node name="Wall" type="CSGBox3D" parent="SubViewport/Scene"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 3, -5)
 size = Vector3(10, 0.1, 10)
-material = ExtResource("3_trsjp")
+material = ExtResource("5_mkpra")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="SubViewport/Scene/Wall"]
 
@@ -96,7 +96,7 @@ shape = SubResource("BoxShape3D_ym5w1")
 [node name="Wall2" type="CSGBox3D" parent="SubViewport/Scene"]
 transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, -2, 0)
 size = Vector3(10, 0.1, 10)
-material = ExtResource("3_trsjp")
+material = ExtResource("5_mkpra")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="SubViewport/Scene/Wall2"]
 
@@ -104,52 +104,23 @@ material = ExtResource("3_trsjp")
 shape = SubResource("BoxShape3D_ym5w1")
 
 [node name="LightPuzzle" type="LightPuzzle" parent="SubViewport/Scene"]
-light_areas = [NodePath("Light Area 1"), NodePath("Light Area 2"), NodePath("Light Area 3")]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
+lights = [NodePath("OmniLight3D")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
 script = null
 
-[node name="CSGSphere3D" type="CSGSphere3D" parent="SubViewport/Scene/LightPuzzle"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
-material = ExtResource("6_q34lj")
-
-[node name="Light Area 1" type="Area3D" parent="SubViewport/Scene/LightPuzzle"]
-visible = false
-collision_mask = 2
-monitorable = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="SubViewport/Scene/LightPuzzle/Light Area 1"]
-shape = SubResource("BoxShape3D_a456t")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="SubViewport/Scene/LightPuzzle/Light Area 1"]
+[node name="OmniLight3D" type="OmniLight3D" parent="SubViewport/Scene/LightPuzzle"]
 omni_range = 2.5
 
-[node name="CSGSphere3D2" type="CSGSphere3D" parent="SubViewport/Scene/LightPuzzle"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 0)
-material = ExtResource("6_q34lj")
+[node name="Area3D" type="Area3D" parent="SubViewport/Scene/LightPuzzle/OmniLight3D"]
 
-[node name="Light Area 2" type="Area3D" parent="SubViewport/Scene/LightPuzzle"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 0)
-visible = false
-collision_mask = 2
-monitorable = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="SubViewport/Scene/LightPuzzle/Light Area 2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SubViewport/Scene/LightPuzzle/OmniLight3D/Area3D"]
 shape = SubResource("BoxShape3D_a456t")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="SubViewport/Scene/LightPuzzle/Light Area 2"]
-omni_range = 2.5
-
-[node name="CSGSphere3D3" type="CSGSphere3D" parent="SubViewport/Scene/LightPuzzle"]
-material = ExtResource("6_q34lj")
-
-[node name="Light Area 3" type="Area3D" parent="SubViewport/Scene/LightPuzzle"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
-visible = false
-collision_mask = 2
-monitorable = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="SubViewport/Scene/LightPuzzle/Light Area 3"]
-shape = SubResource("BoxShape3D_a456t")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="SubViewport/Scene/LightPuzzle/Light Area 3"]
-omni_range = 2.5
