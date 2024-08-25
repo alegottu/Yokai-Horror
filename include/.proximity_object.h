@@ -1,7 +1,6 @@
 #ifndef PROXIMITY_OBJECT_H
 #define PROXIMITY_OBJECT_H
 
-#include "godot_cpp/classes/wrapped.hpp"
 #include <godot_cpp/classes/area3d.hpp>
 #include <godot_cpp/classes/ref.hpp>
 #include <godot_cpp/classes/input_event.hpp>

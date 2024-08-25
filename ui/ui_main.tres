@@ -1,6 +1,6 @@
 [gd_resource type="Theme" load_steps=5 format=3 uid="uid://2t6h04o27q8u"]
 
-[ext_resource type="FontFile" uid="uid://dca81gemct7yg" path="res://ui/RdjHandPixel-5w3L.otf" id="1_q08pv"]
+[ext_resource type="FontFile" uid="uid://bg8j7hjfv7cck" path="res://ui/RdjHandPixel-5w3L.otf" id="1_q08pv"]
 
 [sub_resource type="Gradient" id="Gradient_10wru"]
 

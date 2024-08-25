@@ -35,7 +35,6 @@ layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("1_ln3cp")
 alignment = 1
-selected = 0
 fit_to_longest_item = false
 item_count = 4
 popup/item_0/text = "Windowed"

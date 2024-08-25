@@ -26,19 +26,19 @@ private:
 protected:
 	static void _bind_methods();
 
-public:
-	LightPuzzle();
-	~LightPuzzle();
-
 	// Node property functions
 	void set_light_areas(const Array p_light_areas) { light_areas = p_light_areas; }
 	Array get_light_areas() const { return light_areas; }
 
-	void _ready() override;
-	void _input(const Ref<InputEvent>& event) override;
-	
 	void _body_entered(const Node3D* node);
 	void _body_exited(const Node3D* _);
+
+public:
+	LightPuzzle();
+	~LightPuzzle();
+
+	void _ready() override;
+	void _input(const Ref<InputEvent>& event) override;
 };
 
 #endif // !LIGHT_PUZZLE_H

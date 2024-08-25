@@ -15,7 +15,7 @@ void LightPuzzle::_bind_methods()
 }
 
 LightPuzzle::LightPuzzle()
-	: active_light(0), next_light(1), lights_on(0)
+	: num_lights(0), active_light(0), next_light(1), lights_on(0)
 {
 }
 
@@ -26,16 +26,19 @@ LightPuzzle::~LightPuzzle()
 
 void LightPuzzle::_ready()
 {
-	// profile if num_lights needed
-	num_lights = light_areas.size();
-	_light_areas = new Area3D*[num_lights];
-
-	for (int i = 0; i < num_lights; ++i)
+	if (!light_areas.is_empty())
 	{
-		Area3D* area = get_node<Area3D>((NodePath)light_areas[i]);
-		_light_areas[i] = area;
-		area->connect("body_entered", Callable(this, "_body_entered"));
-		area->connect("body_exited", Callable(this, "_body_exited"));
+		// profile if num_lights needed
+		num_lights = light_areas.size();
+		_light_areas = new Area3D*[num_lights];
+
+		for (int i = 0; i < num_lights; ++i)
+		{
+			Area3D* area = get_node<Area3D>((NodePath)light_areas[i]);
+			_light_areas[i] = area;
+			area->connect("body_entered", Callable(this, "_body_entered"));
+			area->connect("body_exited", Callable(this, "_body_exited"));
+		}
 	}
 }
 

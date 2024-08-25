@@ -36,10 +36,6 @@ private:
 protected:
 	static void _bind_methods();
 
-public:
-	Player();
-	~Player();
-
 	// Node property functions
 	void set_speed(const float p_speed) { speed = p_speed; }
 	float get_speed() const { return speed; }
@@ -57,6 +53,10 @@ public:
 	NodePath get_camera_pivot() const { return camera_pivot; }
 	void set_sub_viewport(const NodePath p_sub_viewport) { sub_viewport = p_sub_viewport; }
 	NodePath get_sub_viewport() const { return sub_viewport; }
+
+public:
+	Player();
+	~Player();
 
 	void _ready() override;
 	void _input(const Ref<InputEvent>& event) override;
