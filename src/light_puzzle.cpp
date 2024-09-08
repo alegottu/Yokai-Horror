@@ -5,8 +5,6 @@
 #include <godot_cpp/variant/callable.hpp>
 #include <godot_cpp/classes/light3d.hpp>
 
-using namespace godot;
-
 void LightPuzzle::_bind_methods()
 {
 	ADD_PRPRTY(&LightPuzzle::set_light_areas, &LightPuzzle::get_light_areas, PropertyInfo(Variant::ARRAY, "light_areas"));

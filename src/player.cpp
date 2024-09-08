@@ -8,8 +8,6 @@
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
 #include <godot_cpp/core/math.hpp>
 
-using namespace godot;
-
 void Player::_bind_methods()
 {
 	ADD_PRPRTY(&Player::set_speed, &Player::get_speed, PropertyInfo(Variant::FLOAT, "speed"));

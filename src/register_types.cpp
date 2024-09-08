@@ -1,14 +1,15 @@
 #include "register_types.h"
+#include "godot_cpp/core/class_db.hpp"
 #include "player.h"
 //#include "proximity_object.h"
 #include "light_puzzle.h"
 #include "dialogue.h"
+#include "dialogue_info.h"
+#include "dialogue_maker.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
-
-using namespace godot;
 
 void initialize_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
@@ -18,7 +19,9 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	GDREGISTER_CLASS(Player);
 	//GDREGISTER_CLASS(ProximityObject);
 	GDREGISTER_CLASS(LightPuzzle);
-	GDREGISTER_CLASS(Dialogue)
+	GDREGISTER_CLASS(Dialogue);
+	GDREGISTER_CLASS(DialogueInfo);
+	GDREGISTER_CLASS(DialogueMaker);
 }
 
 void uninitialize_module(ModuleInitializationLevel p_level) {

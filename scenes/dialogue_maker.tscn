@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://b6dcwbj023lpu"]
+
+[node name="DialogueMaker" type="DialogueMaker"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+split_offset = 175
+vertical = true
+
+[node name="TextEdit" type="TextEdit" parent="."]
+layout_mode = 2
+text = "Protagonist: I am here to destroy ; 1 
+Grandpa: No please don't ; 2
+Protagonist: Never
+Grandpa: Okay I guess ; 1,2"
+placeholder_text = "Enter Dialogue Here"
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 2
+text = "Save Dialogue File"

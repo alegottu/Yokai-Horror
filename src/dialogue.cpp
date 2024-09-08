@@ -4,11 +4,12 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/callable.hpp>
 #include <godot_cpp/classes/engine.hpp>
-
-constexpr char text[3][29] = { "Press E to transfer control.", "Press W to move forward.", "Nothing further." };
+#include <godot_cpp/classes/resource_preloader.hpp>
 
 void Dialogue::_bind_methods()
 {
+	ADD_PRPRTY(&Dialogue::set_resource_preloader, &Dialogue::get_resource_preloader, PropertyInfo(Variant::NODE_PATH, "resource_preloader"));
+	ADD_PRPRTY(&Dialogue::set_dialogue_resource_name, &Dialogue::get_dialogue_resource_name, PropertyInfo(Variant::STRING_NAME, "dialogue_resource_name"));
 	ADD_PRPRTY(&Dialogue::set_text_speed, &Dialogue::get_text_speed, PropertyInfo(Variant::FLOAT, "text_speed"));
 
 	ClassDB::bind_method(D_METHOD("_on_timeout"), &Dialogue::_on_timeout);
@@ -49,13 +50,19 @@ void Dialogue::_ready()
 	else
 	 	set_process_mode(Node::ProcessMode::PROCESS_MODE_INHERIT);
 
+	if (!dialogue_resource_name.is_empty() && !resource_preloader.is_empty())
+	{
+		ResourcePreloader* preload = get_node<ResourcePreloader>(resource_preloader);
+		dialogue = preload->get_resource(dialogue_resource_name);
+	}
+
 	if (get_child_count() > 0)
 	{
 		// ensure correct parent-child hierarchy
 		timer = (Timer*) get_child(0);
 		timer->connect("timeout", Callable(this, "_on_timeout"));
 		timer->set_one_shot(true);
-		set_text(text[current_msg]);
+		set_text(dialogue->get_line(current_msg));
 		set_visible_characters(0);
 		timer->start();
 	}
@@ -65,26 +72,29 @@ void Dialogue::_ready()
 
 void Dialogue::_input(const Ref<InputEvent>& event)
 {
-	if (event->is_action_pressed("esc"))
+	if (event->is_pressed())
 	{
-		set_visible(false);
-		waiting = false;
-		// same as below
-	}
-
-	if (waiting && event->is_action_pressed("click"))
-	{
-		if (++current_msg >= 3)
+		if (event->is_action("esc"))
 		{
 			set_visible(false);
 			waiting = false;
-			// destroy self?
+			// same as below
 		}
-		else 
+		else
 		{
-			set_text(text[current_msg]);
-			set_visible_characters(0);
-			timer->start();
+			if (++current_msg >= dialogue->get_line_count())
+			{
+				set_visible(false);
+				waiting = false;
+				// destroy self?
+			}
+			else 
+			{
+				set_text(dialogue->get_line(current_msg));
+				set_visible_characters(0);
+				timer->start();
+			}
 		}
 	}
+	
 }
