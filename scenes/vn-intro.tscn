@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://be71elhy0klrw"]
+[gd_scene load_steps=2 format=3 uid="uid://be71elhy0klrw"]
+
+[ext_resource type="DialogueInfo" uid="uid://bgtgfgvqbybcl" path="res://dialogue/test.tres" id="1_ser0n"]
 
 [node name="Vn-intro" type="Control"]
 layout_mode = 3
@@ -9,8 +11,11 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="ResourcePreloader" type="ResourcePreloader" parent="."]
+resources = [PackedStringArray("test"), [ExtResource("1_ser0n")]]
 
 [node name="Dialogue" type="Dialogue" parent="."]
+resource_preloader = NodePath("../ResourcePreloader")
+dialogue_resource_name = &"test"
 text_speed = 0.01
 process_mode = 4
 process_physics_priority = 1

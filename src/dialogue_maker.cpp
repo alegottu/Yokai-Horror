@@ -3,9 +3,8 @@
 
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/callable.hpp>
-#include <godot_cpp/classes/ref.hpp>
 #include <godot_cpp/variant/packed_string_array.hpp>
-#include <iostream>
+#include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
 
@@ -28,8 +27,6 @@ void DialogueMaker::_on_enter_pressed()
 {
 	if (get_child_count() == 2 && text->get_line_count() > 0)
 	{
-		Ref<DialogueInfo> dialogue_res;
-
 		PackedStringArray dialogue;
 		PackedByteArray characters; 
 		PackedByteArray event_codes;
@@ -38,7 +35,6 @@ void DialogueMaker::_on_enter_pressed()
 		for (unsigned char i = 0; i < text->get_line_count(); ++i)
 		{
 			PackedStringArray split_line = text->get_line(i).split(": ", false, 1);
-			dialogue.push_back(split_line[1]);
 			String character = split_line[0];
 
 			// no better way around this, may just want to include numbers in text itself
@@ -52,12 +48,13 @@ void DialogueMaker::_on_enter_pressed()
 			}
 			else 
 			{
-				std::cerr << "Incorrect character when processing text" << std::endl;
+				UtilityFunctions::printerr("Invalid character given");
 			}
 
 			if (split_line[1].contains(" ; "))
 			{
 				PackedStringArray split_for_codes = split_line[1].split(" ; ", false, 1);
+				dialogue.push_back(split_for_codes[0]);
 				PackedStringArray str_codes = split_for_codes[1].split(",");
 
 				for (unsigned char j = 0; j < str_codes.size(); ++j)
@@ -66,12 +63,21 @@ void DialogueMaker::_on_enter_pressed()
 					event_indices.push_back(i);
 				}
 			}
+			else
+			{
+	   			dialogue.push_back(split_line[0]);
+	   		}
 		}
 
-		dialogue_res->set_text(dialogue);
-		dialogue_res->set_characters(characters);
-		dialogue_res->set_events(event_codes);
-		dialogue_res->set_event_indices(event_indices);
-		dialogue_res->write_to_disk(dialogue_res, "res://dialogue/test.tres");
+		DialogueInfo dialogue_info;
+		dialogue_info.set("text", dialogue);
+		dialogue_info.set("characters", characters);
+		dialogue_info.set("events", event_codes);
+		dialogue_info.set("event_indices", event_indices);
+		UtilityFunctions::print(dialogue_info.get("text"));
+		UtilityFunctions::print(dialogue_info.get_property_list());
+		Ref<DialogueInfo> dialogue_ref(&dialogue_info);
+		// Can't get properties to be visible to ResourceSaver, pivot to GDScript
+		// dialogue_info.write_to_disk(dialogue_ref, "res://dialogue/test.tres");
 	}
 }

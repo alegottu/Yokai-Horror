@@ -1,13 +1,15 @@
-[gd_scene format=3 uid="uid://b6dcwbj023lpu"]
+[gd_scene load_steps=2 format=3 uid="uid://b6dcwbj023lpu"]
 
-[node name="DialogueMaker" type="DialogueMaker"]
+[ext_resource type="Script" path="res://scripts/dialogue_maker.gd" id="1_5rlw0"]
+
+[node name="VSplitContainer" type="VSplitContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 split_offset = 175
-vertical = true
+script = ExtResource("1_5rlw0")
 
 [node name="TextEdit" type="TextEdit" parent="."]
 layout_mode = 2
@@ -20,3 +22,5 @@ placeholder_text = "Enter Dialogue Here"
 [node name="Button" type="Button" parent="."]
 layout_mode = 2
 text = "Save Dialogue File"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
