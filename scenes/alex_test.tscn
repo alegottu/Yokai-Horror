@@ -143,3 +143,17 @@ shape = SubResource("BoxShape3D_a456t")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="SubViewport/Scene/LightPuzzle/Light Area 3"]
 omni_range = 2.5
+
+[node name="Enemy" type="Node3D" parent="SubViewport/Scene"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -1, 5)
+
+[node name="VisionCone" type="VisionCone" parent="SubViewport/Scene/Enemy"]
+ray_distance = 10.0
+ray_distance_falloff = 0.1
+ray_group_distance_cut = 2.0
+ray_groups = 3
+num_rays = 50
+span = 90
+
+[node name="CSGBox3D" type="CSGBox3D" parent="SubViewport/Scene/Enemy"]
+material = ExtResource("3_s5x4y")

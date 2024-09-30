@@ -1,8 +1,6 @@
 #ifndef HELPERS_H
 #define HELPERS_H
 
-#include <string>
-
 #include <godot_cpp/variant/vector3.hpp>
 #include <godot_cpp/core/class_db.hpp>
 
@@ -13,6 +11,8 @@ using namespace godot;
 #define VECTOR3_ZERO Vector3(0.0f, 0.0f, 0.0f)
 #define GRAVITY Vector3(0.0f, -9.8f, 0.0f)
 #define GRAVITY_Y -9.8f
+
+#include <string>
 
 template <typename N, typename M>
 void add_property(const StringName& type, const N setter, const M getter, const PropertyInfo& properties) 

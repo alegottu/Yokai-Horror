@@ -6,6 +6,7 @@ extends Node
 
 func _on_play_button_down():
 	get_tree().change_scene_to_packed(main_scene)
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _on_quit_button_down():
 	get_tree().quit()

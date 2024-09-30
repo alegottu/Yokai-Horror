@@ -6,6 +6,7 @@
 #include "dialogue.h"
 #include "dialogue_info.h"
 //#include "dialogue_maker.h"
+#include "vision_cone.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -22,6 +23,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
 	GDREGISTER_CLASS(Dialogue);
 	GDREGISTER_CLASS(DialogueInfo);
 	//GDREGISTER_CLASS(DialogueMaker);
+	GDREGISTER_CLASS(VisionCone);
 }
 
 void uninitialize_module(ModuleInitializationLevel p_level) {
