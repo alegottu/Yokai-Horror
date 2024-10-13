@@ -4,7 +4,6 @@ render_mode unshaded;
 
 #define MAXCOLORS 16
 
-
 uniform float max_player_distance = 1.0;
 uniform float static_speed : hint_range(0.0, 1.0) = 0.001;
 uniform float negative_speed = 1.0;
@@ -14,7 +13,6 @@ uniform float distance_margin : hint_range(0.0, 1.0) = 0.0;
 uniform bool dithering = true;
 uniform int colors : hint_range(1, MAXCOLORS) = 12;
 uniform int dither_size : hint_range(1, 8) = 1;
-
 uniform float player_distance = 0;
 
 float dithering_pattern(ivec2 fragcoord) {
@@ -64,6 +62,7 @@ float Random(in vec2 st)
     return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
 }
 
+// Modified code starts here
 vec4 tether_effect(vec4 raw, vec2 uv) {
 	float new_dist = max(0.0, floor(player_distance - distance_margin));
 	float prog = new_dist / max_player_distance; // assumes that player can actually not go past max distance

@@ -30,6 +30,7 @@ protected:
 	void set_light_areas(const Array p_light_areas) { light_areas = p_light_areas; }
 	Array get_light_areas() const { return light_areas; }
 
+	// Signal responses
 	void _body_entered(const Node3D* node);
 	void _body_exited(const Node3D* _);
 

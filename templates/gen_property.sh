@@ -8,15 +8,12 @@ fi
 
 if [[ "$1" == "--src" ]] || [[ "$1" == "-s" ]]; then
 	TYPE_CAPS=$(echo "$4" | sed 's/[A-Z][a-z]/_\l&/g' | sed 's/_//')
+	TYPE_CAPS=$(echo "$TYPE_CAPS" | sed 's/[a-z]/\u&/g')
 	PARAM_NAME="\"p_$3\""
 	SETTER_NAME="\"set_$3\""
 	GETTER_NAME="\"get_$3\""
 	SETTER_SIG="$2::set_$3"
 	GETTER_SIG="$2::get_$3"
-
-	if [[ "$TYPE_CAPS" == "$4" ]]; then
-		TYPE_CAPS=$(echo "$4" | sed 's/[a-z]/\u&/g')
-	fi
 
 	echo "void $2::_bind_methods()
 {
@@ -25,6 +22,12 @@ if [[ "$1" == "--src" ]] || [[ "$1" == "-s" ]]; then
 	ADD_PROPERTY(PropertyInfo(Variant::$TYPE_CAPS, \"$3\"), $SETTER_NAME, $GETTER_NAME);
 }"
 else
-	echo "void set_$1(const $2 p_$1) { $1 = p_$1; }
+	if [[ "$2" == *'*'* ]]; then
+		TYPE_CONST="$2 const"
+	else
+		TYPE_CONST="const $2"
+	fi
+
+	echo "void set_$1($TYPE_CONST p_$1) { $1 = p_$1; }
 $2 get_$1() const { return $1; }"
 fi

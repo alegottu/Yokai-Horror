@@ -54,6 +54,9 @@ protected:
 	void set_sub_viewport(const NodePath p_sub_viewport) { sub_viewport = p_sub_viewport; }
 	NodePath get_sub_viewport() const { return sub_viewport; }
 
+	// Signals
+	// void noise_made(unsigned char noise_level);
+
 public:
 	Player();
 	~Player();

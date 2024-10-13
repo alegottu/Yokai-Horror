@@ -18,6 +18,9 @@ void Player::_bind_methods()
 	ADD_PRPRTY(&Player::set_camera, &Player::get_camera, PropertyInfo(Variant::NODE_PATH, "camera"));
 	ADD_PRPRTY(&Player::set_camera_pivot, &Player::get_camera_pivot, PropertyInfo(Variant::NODE_PATH, "camera_pivot"));
 	ADD_PRPRTY(&Player::set_sub_viewport, &Player::get_sub_viewport, PropertyInfo(Variant::NODE_PATH, "sub_viewport"));
+
+	ADD_SIGNAL(MethodInfo("noise_made", PropertyInfo(Variant::INT, "noise_level")));
+	// use emit_signal("noise_made", this, noise_level e.g. 1) where needed;
 }
 
 Player::Player()

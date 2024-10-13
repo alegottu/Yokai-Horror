@@ -1,5 +1,5 @@
-#ifndef HEADER_H
-#define HEADER_H
+#ifndef VISION_CONE_H
+#define VISION_CONE_H
 
 #include <godot_cpp/classes/node3D.hpp>
 #include <godot_cpp/classes/ray_cast3d.hpp>
@@ -40,7 +40,6 @@ protected:
 public:
 	void _ready() override;
 	~VisionCone();
-	void _physics_process(const double delta) override;
 };
 
-#endif // !HEADER_H
+#endif // !VISION_CONE_H

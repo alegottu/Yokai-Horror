@@ -100,8 +100,3 @@ VisionCone::~VisionCone()
 
 	delete[] rays;
 }
-
-void VisionCone::_physics_process(const double delta)
-{
-	// for now rely on enabling Visible Collision Shapes in Debug menu
-}
